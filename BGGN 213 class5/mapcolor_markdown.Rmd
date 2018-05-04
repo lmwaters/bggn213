@@ -1,6 +1,8 @@
 ---
 title: "Untitled"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 map.colors <- function (value,high.low,palette) {
@@ -87,10 +89,6 @@ s1
 ```{r}
 s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
 s1.chainA
-```
-
-```{r}
-plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor") 
 ```
 
 ```{r}
