@@ -1,0 +1,148 @@
+---
+title: "Class 7"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Section 1 FUnctions
+#can source any file of code with source()
+```{r}
+source("http://tinyurl.com/rescale-R")
+```
+#viewing environment
+```{r}
+ls()
+```
+#check rescale function
+```{r}
+
+rescale(1:10)
+```
+#break function
+```{r, eval=FALSE}
+rescale(1:10, "string")
+```
+```{r, eval=FALSE}
+rescale2(c(1:10, "string"))
+```
+#Function for finding missing values
+#write a both_na() function
+```{r}
+x <- c( 1, 2, NA, 3, NA)
+y <- c(NA, 3, NA, 3, 4)
+is.na(x)
+```
+```{r}
+which(is.na(x))
+
+```
+```{r}
+sum( is.na(x))
+```
+```{r}
+is.na(x)&is.na(y)
+```
+```{r}
+sum(is.na(x)&is.na(y))
+```
+both_na <- function(x, y) {
+  ## Check for NA elements in both input vectors 
+  sum( is.na(x) & is.na(y) )
+```{r}
+both_na(x,y)
+```
+```{r, eval = FALSE}
+x <- c(NA, NA, NA)
+y1 <- c( 1, NA, NA)
+y2 <- c( 1, NA, NA, NA)
+both_na(x, y2)
+```
+function(x, y) {
+  ## Check for NA elements in both input vectors and don't allow re-cycling 
+  if(length(x) != length(y)) {
+    stop("Input x and y should be vectors of the same length", call.=FALSE)
+  }
+  sum( is.na(x) & is.na(y) )
+```{r}
+x <- c(NA, NA, NA)
+y1 <- c( 1, NA, NA)
+y2 <- c( 1, NA, NA, NA)
+both_na2(x, y1)
+```
+
+```{r, eval=FALSE}
+both_na3 <- function(x, y) {
+  ## Print some info on where NA's are as well as the number of them 
+  if(length(x) != length(y)) {
+    stop("Input x and y should be vectors of the same length", call.=FALSE)
+  }
+  na.in.both <- ( is.na(x) & is.na(y) )
+  na.number  <- sum(na.in.both)
+  na.which   <- which(na.in.both)
+
+  message("Found ", na.number, " NA's at position(s):", 
+          paste(na.which, collapse=", ") ) 
+  
+  return( list(number=na.number, which=na.which) )
+}
+both_na3(x,y)
+```
+#Section 2
+```{r}
+x <- df1$IDs
+y <- df2$IDs
+x
+y
+```
+#intersect() annd %in%
+```{r}
+intersect(x,y)
+x%in%y
+```
+
+```{r}
+# Putting together
+cbind( x[ x %in% y ], y[ y %in% x ] )
+```
+```{r}
+gene_intersect <- function(x, y) { 
+   cbind( x[ x %in% y ], y[ y %in% x ] )
+}
+gene_intersect(x,y)
+```
+gene_intersect2 <- function(df1, df2) { 
+   cbind( df1[ df1$IDs %in% df2$IDs, ], 
+          df2[ df2$IDs %in% df1$IDs, "exp"] )
+}
+```{r}
+gene_intersect2(df1,df2)
+```
+gene_intersect3 <- function(df1, df2, gene.colname="IDs") { 
+   cbind( df1[ df1[,gene.colname] %in% df2[,gene.colname], ], 
+          exp2=df2[ df2[,gene.colname] %in% df1[,gene.colname], "exp"] )
+}
+```{r}
+gene_intersect3(df1,df2)
+```
+gene_intersect4 <- function(df1, df2, gene.colname="IDs") { 
+
+  df1.name <- df1[,gene.colname]
+  df2.name <- df2[,gene.colname]
+
+  df1.inds <- df1.name %in% df2.name
+  df2.inds <- df2.name %in% df1.name
+
+   cbind( df1[ df1.inds, ], 
+          exp2=df2[ df2.inds, "exp"] )
+}
+```{r}
+gene_intersect4(df1,df2)
+```
+
+```{r}
+merge(df1, df2, by="IDs")
+```
