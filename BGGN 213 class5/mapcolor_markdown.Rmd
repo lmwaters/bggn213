@@ -1,0 +1,114 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+map.colors <- function (value,high.low,palette) {
+  proportion <- ((value-high.low[1])/(high.low[2]-high.low[1]))
+  index <- round ((length(palette)-1)*proportion)+1
+  return (palette[index])
+}
+
+
+```{r}
+
+map.colors2 <- function(x, high.low = range(x) , palette = cm.colors(100)) {
+
+ #determine where in hig.low range value x lies
+   percent <- ((x - high.low[1]) / (high.low[2] - high.low[1]))
+ 
+ #where in palette vector is this percent
+  index <- round( (length(palette)-1) *percent)+1
+
+   return(palette[index])
+ }
+```
+1st function  
+```{r}
+add <- function(x, y=1) {
+ # Sum the input x and y
+ x + y
+}
+```
+2nd function
+```{r}
+rescale <- function(x) {
+ rng <-range(x)
+ (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+test 2nd function
+```{r}
+rescale(c(1,2,NA,3,10))
+```
+```{r}
+rescale(1:10)
+```
+```{r}
+rescale2<- function(x) {
+ rng <-range(x, na.rm=TRUE)
+ (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+test rescale2
+```{r}
+rescale2(c(1,2,NA,3,10))
+```
+
+```{r}
+rescale3 <- function(x, na.rm=TRUE, plot=TRUE) {
+ if(na.rm) {
+ rng <-range(x, na.rm=na.rm)
+ } else {
+ rng <-range(x)
+ }
+ print("Hello")
+ answer <- (x - rng[1]) / (rng[2] - rng[1])
+ 
+ print("is it me you are looking for?")
+ if(plot) {
+ plot(answer, typ="b", lwd=4)
+ }
+ print("I can see it in ...")
+  return(answer)
+}
+```
+test rescale3
+```{r}
+rescale3(c(1,2,NA,3,10))
+```
+## Section 2b class 6
+```{r}
+library(bio3d)
+s1 <- read.pdb("4AKE") # kinase with drug
+s1
+```
+
+```{r}
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s1.chainA
+```
+
+```{r}
+plotb3(s1.b, sse=s1.chainA, typ="l", ylab="Bfactor") 
+```
+
+```{r}
+library(bio3d)
+s1 <- read.pdb("4AKE") # kinase with drug
+s2 <- read.pdb("1AKE") # kinase no drug
+s3 <- read.pdb("1E4Y") # kinase with drug
+s1.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s2.chainA <- trim.pdb(s2, chain="A", elety="CA")
+s3.chainA <- trim.pdb(s1, chain="A", elety="CA")
+s1.b <- s1.chainA$atom$b
+s2.b <- s2.chainA$atom$b
+s3.b <- s3.chainA$atom$b
+```
+
+```{r}
+hc <- hclust( dist( rbind(s1.b, s2.b, s3.b) ) )
+plot(hc)
+```
+
+
