@@ -13,4 +13,25 @@ percent <- (pdbstat$Total/sum(pdbstat$Total))*100
 names(percent) <- row.names(pdbstat)
 percent
 ```
+#Using Bio3D
+```{r}
+library(bio3d)
+```
+Read HIV-protease structure
+```{r}
+pdb <- read.pdb("1hsg")
+pdb
+```
+write protein only PBD file
+```{r}
+hiv.protein <- trim.pdb(pdb, atom.select(pdb, "protein"))
+hiv.ligand <- trim.pdb(pdb, atom.select(pdb, "ligand"))
+
+hiv.protein
+```
+write file
+```{r}
+write.pdb(hiv.protein, "HIV-protease_only.pdb")
+write.pdb(hiv.ligand, "HIV-protease_ligand.pdb")
+```
 
