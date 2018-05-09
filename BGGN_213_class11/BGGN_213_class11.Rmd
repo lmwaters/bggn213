@@ -34,4 +34,50 @@ write file
 write.pdb(hiv.protein, "HIV-protease_only.pdb")
 write.pdb(hiv.ligand, "HIV-protease_ligand.pdb")
 ```
+#Using MUSCLE
+```{r}
+ids <- c("1TND_B","1AGR_A","1TAG_A","1GG2_A","1KJY_A","4G5Q_A")
+files <- get.pdb(ids, split = TRUE)
+pdbs <- pdbaln(files, fit = TRUE)
+```
+
+```{r}
+pdbs
+```
+#Search and retrieve Adenylate kinase structures
+```{r}
+aa <- get.seq("1ake_A")
+b <- blast.pdb(aa)
+```
+
+```{r}
+hits <- plot(b)
+hits
+```
+
+```{r}
+head(hits$pdb.id)
+```
+
+```{r}
+# Fetch PDBs
+files <- get.pdb(hits$pdb.id, path = "pdbs", split = TRUE, gzip =
+TRUE)
+# Align structures
+pdbs <- pdbaln(files)
+# Vector containing PDB codes
+ids <- basename.pdb(pdbs$id)
+# Draw schematic alignment
+plot(pdbs, labels=ids)
+```
+#PCA
+```{r}
+# find invariant core
+core <- core.find(pdbs)
+# superimpose all structures to core
+pdbs$xyz = pdbfit(pdbs, core)
+# Perform PCA
+pc.xray <- pca(pdbs)
+plot(pc.xray)
+```
 
