@@ -1,0 +1,16 @@
+---
+title: "BGGN 213 class 11"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#PDB statistics
+```{r}
+pdbstat <- read.csv("Data Export Summary.csv", row.names=1)
+percent <- (pdbstat$Total/sum(pdbstat$Total))*100
+names(percent) <- row.names(pdbstat)
+percent
+```
+
