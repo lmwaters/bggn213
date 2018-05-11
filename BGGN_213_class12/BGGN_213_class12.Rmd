@@ -1,0 +1,28 @@
+---
+title: "Untitled"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#HIV-protease docking study
+```{r}
+library(bio3d)
+file.name <- get.pdb("1hsg")
+hiv <- read.pdb(file.name)
+hiv
+```
+separate protein and ligand
+```{r}
+prot <- trim.pdb(hiv, "protein")
+lig <- trim.pdb(hiv, "ligand")
+
+write.pdb(prot, file="1hsg_protein.pdb")
+write.pdb(lig, "1hsg_ligand.pdb")
+lig
+```
+```{r}
+prot
+```
+
