@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Class 12"
 output: github_document
 ---
 
@@ -24,5 +24,17 @@ lig
 ```
 ```{r}
 prot
+```
+
+```{r}
+library(bio3d)
+res <- read.pdb("all.pdbqt", multi=TRUE)
+write.pdb(res, "results.pdb")
+```
+
+```{r}
+# res <- read.pdb("all.pdbqt", multi=TRUE)
+ori <- read.pdb("1hsg_ligand.pdbqt")
+rmsd(ori, res)
 ```
 
