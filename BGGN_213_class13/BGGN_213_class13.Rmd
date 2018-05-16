@@ -1,0 +1,57 @@
+---
+title: "Class 13"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#1000 Genome project Data for MXL
+```{r}
+genotype <- read.csv("373531-SampleGenotypes-Homo_sapiens_Variation_Sample_rs8067378.csv")
+```
+genotype proportions 
+```{r}
+table(genotype[,2])/nrow(genotype)*100
+```
+#Using galaxy and genomic data
+```{r}
+library(seqinr)
+library(gtools)
+phred <- asc( s2c("DDDDCDEDCDDDDBBDDDCC@") ) - 33 
+phred
+```
+#RNA-seq analysis results, assessing population differences
+```{r}
+geno <- read.table("rs8067378_ENSG00000172057.6.txt")
+```
+
+```{r}
+summary(geno)
+```
+```{r}
+summary(geno$exp[geno$geno== "G/G"])
+summary(geno$exp[geno$geno== "A/G"])
+summary(geno$exp[geno$geno== "A/A"])
+```
+#boxplot
+```{r}
+boxplot(geno$exp ~ geno$geno)
+```
+#Using ggplot2
+```{r}
+library(ggplot2)
+ggplot(geno, aes(geno, exp)) + geom_boxplot()
+```
+## Histogram of the exp column with ggplot2
+```{r}
+ggplot(geno, aes(exp, fill = geno)) + geom_density(alpha = 0.2)
+```
+# Boxplot with the data shown
+```{r}
+ggplot(geno, aes(geno, exp, fill=geno)) + 
+  geom_boxplot(notch=TRUE, outlier.shape = NA) + 
+  geom_jitter(shape=16, position=position_jitter(0.2), alpha=0.4)
+
+```
+
