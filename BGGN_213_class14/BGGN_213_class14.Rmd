@@ -217,6 +217,14 @@ ggplot(as.data.frame(res), aes(log2FoldChange, -1*log10(pvalue), col=sig)) +
     geom_point() + 
     ggtitle("Volcano plot")
 ```
+#Principle Component Analysis
+```{r}
+#variance stabilizing transformation (VST)
+vsdata <- vst(dds, blind=FALSE)
+
+library(DESeq2)
+plotPCA(vsdata, intgroup="dex")
+```
 
 ```{r}
 sessionInfo()

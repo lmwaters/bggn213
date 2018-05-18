@@ -711,7 +711,17 @@ ggplot(as.data.frame(res), aes(log2FoldChange, -1*log10(pvalue), col=sig)) +
 
     ## Warning: Removed 13578 rows containing missing values (geom_point).
 
-![](BGGN_213_class14_files/figure-markdown_github/unnamed-chunk-39-1.png)
+![](BGGN_213_class14_files/figure-markdown_github/unnamed-chunk-39-1.png) \#Principle Component Analysis
+
+``` r
+#variance stabilizing transformation (VST)
+vsdata <- vst(dds, blind=FALSE)
+
+library(DESeq2)
+plotPCA(vsdata, intgroup="dex")
+```
+
+![](BGGN_213_class14_files/figure-markdown_github/unnamed-chunk-40-1.png)
 
 ``` r
 sessionInfo()
