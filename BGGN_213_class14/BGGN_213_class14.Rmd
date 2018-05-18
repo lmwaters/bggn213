@@ -1,0 +1,220 @@
+---
+title: "BGGN_213_class14"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Transcriptomics and RNA-Seq data
+count matrix and meta-data matrix
+```{r}
+counts <- read.csv("Data/airway_scaledcounts.csv", stringsAsFactors = FALSE)
+metadata <-  read.csv("Data/airway_metadata.csv", stringsAsFactors = FALSE)
+head(counts)
+```
+
+```{r}
+head(metadata)
+```
+
+```{r}
+colnames(counts)[-1] == metadata$id
+```
+#Toy differential gene expression
+Lets perform some exploratory differential gene expression analysis. Note: this analysis is for demonstration only. NEVER do differential expression analysis this way!
+
+Calculate mean counts for each gene across control samples
+```{r}
+control <- metadata[metadata[,"dex"]=="control",]
+control.mean <- rowSums( counts[ ,control$id] )/nrow(control) 
+names(control.mean) <- counts$ensgene
+head(control.mean)
+```
+Calculate mean counts for each gene across treated samples
+```{r}
+treated <- metadata[metadata[,"dex"]=="treated",]
+treated.mean <- rowSums( counts[ ,treated$id] )/nrow(treated) 
+names(treated.mean) <- counts$ensgene
+head(treated.mean)
+```
+
+```{r}
+meancounts <- data.frame(control.mean, treated.mean)
+head(meancounts)
+```
+#plot mean counts for control vs treated
+```{r}
+plot(meancounts$control, meancounts$treated,
+     xlab="Control", ylab="Treated"
+     )
+```
+plot with log axis to see more of data
+```{r}
+plot(meancounts$control, meancounts$treated, log="xy",
+     xlab="Control", ylab="Treated"
+     )
+```
+
+```{r}
+meancounts$log2fc <- log2(meancounts[,"treated.mean"]/meancounts[,"control.mean"])
+head(meancounts)
+```
+removing NA and -Inf values (from attempting to divdie by 0 and attempting to take log of 0)
+```{r}
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE)
+
+head(zero.vals)
+```
+```{r}
+to.rm <- unique(zero.vals[,1])
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+```
+#Checking for 2 fold change
+```{r}
+up.ind <- mycounts$log2fc > 2
+down.ind <- mycounts$log2fc < (-2)
+
+paste("Up:", sum(up.ind))
+paste("Down:", sum(down.ind))
+```
+#Annotation
+```{r}
+anno <- read.csv("Data/annotables_grch38.csv")
+head(anno)
+```
+
+```{r}
+results <- merge(mycounts, anno, by.x="row.names", by.y="ensgene")
+head(results)
+```
+#Different Annotation
+```{r}
+library(org.Hs.eg.db)
+columns(org.Hs.eg.db)
+
+```
+```{r}
+mycounts$symbol <- mapIds(org.Hs.eg.db,
+                     keys=row.names(mycounts),
+                     column="SYMBOL",
+                     keytype="ENSEMBL",
+                     multiVals="first")
+head(mycounts)
+```
+```{r}
+head(mycounts[up.ind,])
+```
+#DESeq2 Analysis
+```{r}
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex, 
+                              tidy=TRUE)
+dds
+```
+```{r}
+dds <- DESeq(dds)
+```
+```{r}
+res <- results(dds)
+res
+```
+```{r}
+summary(res)
+```
+Order results by p-value
+```{r}
+resOrdered <- res[order(res$pvalue),]
+head(resOrdered)
+```
+```{r}
+res05 <- results(dds, alpha=0.05)
+summary(res05)
+```
+```{r}
+resSig05 <- subset(as.data.frame(res), padj < 0.05)
+nrow(resSig05)
+
+resSig01 <- subset(as.data.frame(res), padj < 0.01)
+nrow(resSig01)
+```
+```{r}
+ord <- order( resSig01$padj )
+#View(res01[ord,])
+head(resSig01[ord,])
+```
+Annotate significant results
+```{r}
+library(org.Hs.eg.db)
+resSig01$symbol <- mapIds(org.Hs.eg.db,
+                     keys=row.names(resSig01),
+                     column="SYMBOL",
+                     keytype="ENSEMBL",
+                     multiVals="first")
+head(resSig01)
+```
+
+
+Save significant results as a file
+```{r}
+write.csv(resSig01[ord,], "signif01_results.csv")
+```
+#visualize data
+```{r}
+i <- grep("CRISPLD2", resSig01$symbol)
+resSig01[i,]
+```
+```{r}
+rownames(resSig01[i,])
+```
+```{r}
+library(DESeq2)
+plotCounts(dds, gene="ENSG00000103196", intgroup="dex")
+```
+```{r}
+# Return the data
+d <- plotCounts(dds, gene="ENSG00000103196", intgroup="dex", returnData=TRUE)
+head(d)
+```
+Boxplot
+```{r}
+boxplot(count ~ dex , data=d)
+```
+ggplot boxplot
+```{r}
+library(ggplot2)
+ggplot(d, aes(dex, count)) + geom_boxplot(aes(fill=dex)) + scale_y_log10() + ggtitle("CRISPLD2")
+```
+#MA and Volcano plots
+```{r}
+res$sig <- res$padj<0.05
+
+# How many of each?
+table(res$sig)
+```
+```{r}
+sum(is.na(res$sig))
+```
+```{r}
+library(DESeq2)
+plotMA(res, ylim=c(-2,2))
+```
+remove noise of low count genes
+```{r}
+resLFC <- lfcShrink(dds, coef=2)
+resLFC
+```
+```{r}
+plotMA(resLFC, ylim=c(-2,2))
+```
+Volcano plots
+```{r}
+library(ggplot2)
+ggplot(as.data.frame(res), aes(log2FoldChange, -1*log10(pvalue), col=sig)) + 
+    geom_point() + 
+    ggtitle("Volcano plot")
+```
+
