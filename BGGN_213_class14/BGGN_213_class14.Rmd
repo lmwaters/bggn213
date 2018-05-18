@@ -218,3 +218,7 @@ ggplot(as.data.frame(res), aes(log2FoldChange, -1*log10(pvalue), col=sig)) +
     ggtitle("Volcano plot")
 ```
 
+```{r}
+sessionInfo()
+```
+

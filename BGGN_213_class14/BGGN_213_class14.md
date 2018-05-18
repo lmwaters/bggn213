@@ -712,3 +712,57 @@ ggplot(as.data.frame(res), aes(log2FoldChange, -1*log10(pvalue), col=sig)) +
     ## Warning: Removed 13578 rows containing missing values (geom_point).
 
 ![](BGGN_213_class14_files/figure-markdown_github/unnamed-chunk-39-1.png)
+
+``` r
+sessionInfo()
+```
+
+    ## R version 3.4.4 (2018-03-15)
+    ## Platform: x86_64-w64-mingw32/x64 (64-bit)
+    ## Running under: Windows 10 x64 (build 16299)
+    ## 
+    ## Matrix products: default
+    ## 
+    ## locale:
+    ## [1] LC_COLLATE=English_United States.1252 
+    ## [2] LC_CTYPE=English_United States.1252   
+    ## [3] LC_MONETARY=English_United States.1252
+    ## [4] LC_NUMERIC=C                          
+    ## [5] LC_TIME=English_United States.1252    
+    ## 
+    ## attached base packages:
+    ## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
+    ## [8] methods   base     
+    ## 
+    ## other attached packages:
+    ##  [1] ggplot2_2.2.1              DESeq2_1.18.1             
+    ##  [3] SummarizedExperiment_1.8.1 DelayedArray_0.4.1        
+    ##  [5] matrixStats_0.53.1         GenomicRanges_1.30.3      
+    ##  [7] GenomeInfoDb_1.14.0        org.Hs.eg.db_3.5.0        
+    ##  [9] AnnotationDbi_1.40.0       IRanges_2.12.0            
+    ## [11] S4Vectors_0.16.0           Biobase_2.38.0            
+    ## [13] BiocGenerics_0.24.0       
+    ## 
+    ## loaded via a namespace (and not attached):
+    ##  [1] locfit_1.5-9.1         Rcpp_0.12.16           lattice_0.20-35       
+    ##  [4] rprojroot_1.3-2        digest_0.6.15          plyr_1.8.4            
+    ##  [7] backports_1.1.2        acepack_1.4.1          RSQLite_2.1.1         
+    ## [10] evaluate_0.10.1        pillar_1.2.2           zlibbioc_1.24.0       
+    ## [13] rlang_0.2.0            lazyeval_0.2.1         annotate_1.56.2       
+    ## [16] rstudioapi_0.7         data.table_1.11.2      blob_1.1.1            
+    ## [19] rpart_4.1-13           Matrix_1.2-12          checkmate_1.8.5       
+    ## [22] rmarkdown_1.9          labeling_0.3           splines_3.4.4         
+    ## [25] BiocParallel_1.12.0    geneplotter_1.56.0     stringr_1.3.0         
+    ## [28] foreign_0.8-69         htmlwidgets_1.2        RCurl_1.95-4.10       
+    ## [31] bit_1.1-13             munsell_0.4.3          compiler_3.4.4        
+    ## [34] pkgconfig_2.0.1        base64enc_0.1-3        htmltools_0.3.6       
+    ## [37] nnet_7.3-12            tibble_1.4.2           gridExtra_2.3         
+    ## [40] htmlTable_1.11.2       GenomeInfoDbData_1.0.0 Hmisc_4.1-1           
+    ## [43] XML_3.98-1.11          bitops_1.0-6           grid_3.4.4            
+    ## [46] xtable_1.8-2           gtable_0.2.0           DBI_1.0.0             
+    ## [49] magrittr_1.5           scales_0.5.0           stringi_1.1.7         
+    ## [52] XVector_0.18.0         genefilter_1.60.0      latticeExtra_0.6-28   
+    ## [55] Formula_1.2-3          RColorBrewer_1.1-2     tools_3.4.4           
+    ## [58] bit64_0.9-7            survival_2.41-3        yaml_2.1.18           
+    ## [61] colorspace_1.3-2       cluster_2.0.6          memoise_1.1.0         
+    ## [64] knitr_1.20
