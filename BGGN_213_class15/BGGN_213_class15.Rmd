@@ -1,0 +1,198 @@
+---
+title: "Class 15"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Differential Expression Analysis
+```{r,echo=FALSE}
+library(DESeq2)
+```
+```{r}
+metaFile <- "data/GSE37704_metadata.csv"
+countFile <- "data/GSE37704_featurecounts.csv"
+
+# Import metadata and take a peak
+colData = read.csv(metaFile, row.names=1)
+head(colData)
+```
+```{r}
+# Import countdata
+countData = read.csv(countFile, row.names=1)
+head(countData)
+```
+```{r}
+# Note we need to remove the odd first $length col
+countData <- as.matrix(countData[,-1])
+head(countData)
+```
+```{r}
+# Filter count data where you have 0 read count across all samples.
+countData = countData[rowSums(countData)>1, ]
+head(countData)
+```
+```{r}
+dds = DESeqDataSetFromMatrix(countData=countData,
+                             colData=colData,
+                             design=~condition)
+dds = DESeq(dds)
+```
+#Extracting Results Table
+```{r}
+res <- results(dds)
+res
+```
+```{r}
+mcols(res, use.names = TRUE)
+```
+```{r}
+summary(res)
+```
+by default) the FDR level is set to 10% (i.e. adjusted p-value < 0.1) and the log2 fold change threshold is set to 0. Use the alpha and lfcThreshold input arguments to the results() function to change these to an FDR of 5% and a log2 fold change threshold of 2. Then use the summary() function to find out how many genes are up and down at these thresholds.
+```{r}
+res2 <- results(dds, alpha=.05, lfcThreshold=2)
+summary(res2)
+```
+```{r}
+table(res$padj < 0.05)
+table(res$log2FoldChange > 2)
+```
+```{r}
+table( res$padj < 0.05, res$log2FoldChange > 2)
+```
+```{r}
+# Make a new results object 'resSig' with only significant genes
+resSig <- subset(res, padj < 0.05)
+
+# Print the first 10 strongest DOWN genes
+ord.down <- order(resSig$log2FoldChange)
+head(resSig[ ord.down, ], 10)
+```
+```{r}
+ord.up <- order(resSig$log2FoldChange, decreasing = TRUE)
+head(resSig[ ord.up, ], 10)
+```
+
+#Gene Annotaion
+```{r}
+library("AnnotationDbi")
+library("org.Hs.eg.db")
+
+columns(org.Hs.eg.db)
+```
+```{r}
+res2$symbol = mapIds(org.Hs.eg.db,
+                    keys=row.names(res2), 
+                    column="SYMBOL",
+                    keytype="ENSEMBL",
+                    multiVals="first")
+
+res2$entrez = mapIds(org.Hs.eg.db,
+                    keys=row.names(res2), 
+                    column="ENTREZID",
+                    keytype="ENSEMBL",
+                    multiVals="first")
+
+res2$name =   mapIds(org.Hs.eg.db,
+                    keys=row.names(res2), 
+                    column="GENENAME",
+                    keytype="ENSEMBL",
+                    multiVals="first")
+
+head(res2, 10)
+```
+#Pathway Analysis
+```{r, echo=FALSE}
+library(pathview)
+library(gage)
+library(gageData)
+
+```
+```{r}
+data(kegg.sets.hs)
+data(sigmet.idx.hs)
+
+kegg.sets.hs = kegg.sets.hs[sigmet.idx.hs]
+head(kegg.sets.hs, 3)
+```
+```{r}
+foldchanges = res2$log2FoldChange
+names(foldchanges) = res2$entrez
+head(foldchanges)
+```
+```{r}
+# Get the results
+keggres = gage(foldchanges, gsets=kegg.sets.hs, same.dir=TRUE)
+
+attributes(keggres)
+```
+```{r}
+head(keggres$greater)
+```
+```{r}
+head(keggres$less)
+```
+```{r}
+lapply(keggres, head)
+```
+Sanity check displaying all pathways data
+```{r}
+pathways = data.frame(id=rownames(keggres$greater), keggres$greater)
+head(pathways)
+
+```
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110")
+
+
+```
+![](hsa04110.pathview.png)
+
+# A different PDF based output of the same data
+```{r}
+pathview(gene.data=foldchanges, pathway.id="hsa04110", kegg.native=FALSE)
+
+
+```
+![](hsa04110.pathview.pdf)
+```{r}
+## Focus on top 5 upregulated pathways here for demo purposes only
+keggrespathways <- rownames(keggres$greater)[1:5]
+
+# Extract the IDs part of each string
+keggresids = substr(keggrespathways, start=1, stop=8)
+keggresids
+```
+```{r}
+pathview(gene.data=foldchanges, pathway.id=keggresids, species="hsa")
+
+
+```
+![](hsa04640.pathview.png)
+
+#Gene Ontology (GO)
+```{r}
+data(go.sets.hs)
+data(go.subs.hs)
+gobpsets = go.sets.hs[go.subs.hs$BP]
+
+gobpres = gage(foldchanges, gsets=gobpsets, same.dir=TRUE)
+
+lapply(gobpres, head)
+```
+#Reactome Pathway Analysis
+```{r}
+sig_genes <- res2[res2$padj <= 0.05 & !is.na(res2$padj), "symbol"]
+print(paste("Total number of significant genes:", length(sig_genes)))
+
+```
+```{r}
+## [1] "Total number of significant genes: 8151"
+write.table(sig_genes, file="significant_genes.txt", row.names=FALSE, col.names=FALSE, quote=FALSE)
+```
+```{r}
+sessionInfo()
+```
+
