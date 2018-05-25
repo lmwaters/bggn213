@@ -1,0 +1,43 @@
+---
+title: "BGGN_213_class16"
+output: html_document
+keep_md: TRUE
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Supercomputer Work
+```{r}
+download.file("https://raw.githubusercontent.com/ngs-docs/angus/17a0ba3b1d915de90a5b8bd1fbc1027eba47baf8/_static/shmlast/mouse.1.rna.fna.gz.x.cow.faa.crbl.csv.gz", "shmlast.csv")
+shmlast_out <- read.csv("shmlast.csv")
+```
+#Histograms
+```{r}
+hist(shmlast_out$E_scaled)
+```
+
+```{r}
+hist(shmlast_out$bitscore)
+```
+
+```{r}
+hist(shmlast_out$q_len)
+```
+#Plot query length vs bit score
+```{r}
+plot(shmlast_out$q_len, shmlast_out$bitscore)
+```
+#Sampling from data
+```{r}
+shmlast_sub = shmlast_out[sample(nrow(shmlast_out), 10),]
+head(shmlast_sub)
+```
+#Subset of data
+```{r}
+tmp <- subset(shmlast_out, q_len >= 8000 & q_len <= 11000 & bitscore <=2000)  
+functions <- tmp[, c("q_name", "s_name")]
+head(functions)
+```
+
