@@ -13,3 +13,4 @@ My classwork for BGGN 213 UCSD
 - **Genome annotation and the interpretation of gene lists**: [Class 15](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class15/BGGN_213_class15.md)
 - **Essential UNIX for bioinformatics**: [Class 16](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class16/BGGN_213_class16.md)
 - **Biological network analysis**: [Class 17](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class17/BGGN_213_class17.md)
+- **Cancer genomics**: [Class 18](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class18/BGGN_213_class18.Rmd)
