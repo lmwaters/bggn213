@@ -1,2 +1,2 @@
 # Bioinformatics BGGN 213
-My classwork for BGGN213 class10 UCSD
+My classwork for BGGN 213 UCSD
