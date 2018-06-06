@@ -1,0 +1,81 @@
+---
+title: "BGGN 213 Class 18"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Investigating cancer genomics datasets
+GenomicDataCommons R package
+```{r, echo=FALSE}
+library(GenomicDataCommons)
+library(maftools)
+```
+```{r}
+GenomicDataCommons::status()
+```
+Querying the GDC from R
+```{r}
+library(GenomicDataCommons)
+cases_by_project <- cases() %>%
+  facet("project.project_id") %>%
+  aggregations()
+
+head(cases_by_project)
+```
+Barplot
+```{r}
+x <- cases_by_project$project.project_id$doc_count
+name <- cases_by_project$project.project_id$key
+mycol <- rep("light blue", length(x) )
+ind <- which(name=="TCGA-PAAD")
+mycol[ind] <- "red"
+               
+par(mar=c(7,4,0,0))
+barplot(x, log="y", names.arg=name, 
+        las=2, col= mycol)
+```
+#Designing a personalized cancer vaccine
+aligned seqs with MUSCLE website
+```{r}
+library(bio3d)
+ali <- read.fasta("data/muscle-I20180601-232019-0374-61002903-p1m")
+ali
+```
+
+```{r}
+mutant <- conserv(ali, method="identity")
+mutant
+```
+```{r}
+sites <- which(mutant < 1 & 
+                 is.gap(ali)==FALSE)
+sites
+```
+```{r}
+# Make a "names" label for our output sequences (one per mutant)
+mutant.names <- paste0(ali$ali["P53_wt", sites],
+                       sites,
+                       ali$ali["P53_mutant", sites])
+
+mutant.names
+```
+```{r}
+## Sequence positions surounding each mutant site
+start.position <- sites - 8
+end.position <-  sites + 8
+
+# Blank matrix to store sub-sequences
+store.seqs <- matrix("-", nrow=length(sites), ncol=17)
+rownames(store.seqs) <- mutant.names
+
+## Extract each sub-sequence
+for(i in 1:length(sites)) {
+  store.seqs[i,] <- ali$ali["P53_mutant",start.position[i]:end.position[i]]
+}
+
+store.seqs
+```
+
+
