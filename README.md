@@ -7,3 +7,6 @@ My classwork for BGGN 213 UCSD
 - **Introduction to Machine Learning for Bioinformatics**: [Class 8](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class8/BGGN_213_class8.md)
 - **Unsupervised Learning Mini-Project**: [Class 9](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class9/BGGN_213_class9.md)
 - **Structural Bioinformatics**: [Class 11](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class11/BGGN_213_class11.md)
+- **Bioinformatics in drug discovery and design**: [Class 12](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class12/BGGN_213_class12.md)
+- **Genome informatics and high throughput sequencing**: [Class 13](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class13/BGGN_213_class13.md)
+- **Transcriptomics and the analysis of RNA-Seq data**: [Class 14](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class14/BGGN_213_class14.md)
