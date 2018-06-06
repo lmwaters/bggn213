@@ -10,3 +10,6 @@ My classwork for BGGN 213 UCSD
 - **Bioinformatics in drug discovery and design**: [Class 12](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class12/BGGN_213_class12.md)
 - **Genome informatics and high throughput sequencing**: [Class 13](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class13/BGGN_213_class13.md)
 - **Transcriptomics and the analysis of RNA-Seq data**: [Class 14](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class14/BGGN_213_class14.md)
+- **Genome annotation and the interpretation of gene lists**: [Class 15](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class15/BGGN_213_class15.md)
+- **Essential UNIX for bioinformatics**: [Class 16](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class16/BGGN_213_class16.md)
+- **Biological network analysis**: [Class 17](https://github.com/lmwaters/bggn213/blob/master/BGGN_213_class17/BGGN_213_class17.md)
